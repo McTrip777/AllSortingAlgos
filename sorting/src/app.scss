@@ -1,0 +1,19 @@
+.App{
+    display: flex;
+    flex-direction: column;
+    .barsContainer{
+        display: flex;
+        justify-content: space-evenly;
+        align-items: flex-end;
+        .bar{
+            color: black;
+            background-color: black;
+        }
+    }
+    .buttonContainer{
+
+        button{
+            margin:1em;
+        }
+    }
+}

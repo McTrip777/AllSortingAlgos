@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./app.scss"
 
 function App() {
-  const [quantity, setQuantity] = useState(200)
+  const [quantity, setQuantity] = useState(300)
   const [arr, setArr] = useState([])
   const [method, setMethod] = useState("Selection")
 
@@ -19,63 +19,56 @@ function App() {
 
   // Shuffle my array so it can be sorted
   const shuffle = () => {
-    let temp, random
-    let tempArr = arr
+    let random
     for (let i = 0; i < quantity; i++) {
-      temp = tempArr[i]
       random = Math.floor(Math.random() * quantity)
-      tempArr[i] = tempArr[random]
-      tempArr[random] = temp
+      swap(i, random)
     }
-    setArr([...tempArr])
+    setArr([...arr])
   }
 
   // Selection Sort -> Find the smallest value and swap it with the first value of the array then increment the index and repeat until solved
-  const selectionSort = () => {
+  const selectionSort = async () => {
     let i = 0
     let tempArr = arr
     while (i < quantity) {
       let lowNum = quantity
-      let index, temp
+      let index
       for (let j = i; j < quantity; j++) {
         if (lowNum > Number(tempArr[j].key)) {
           lowNum = Number(tempArr[j].key)
           index = j
         }
       }
-      temp = tempArr[i]
-      tempArr[i] = tempArr[index]
-      tempArr[index] = temp
+      await sleep()
+      swap(i, index)
       i++
+      setArr([...tempArr])
     }
-    setArr([...tempArr])
   }
 
   // Bubble Sort -> Take the first 2 values and compare them, if the first is larger than the second, swap them otherwise continue to the next number.
   // Continue this through the whole array and then repeat until all values are in order.
-  const bubbleSort = () => {
+  const bubbleSort = async () => {
     let bool = true
     let again = false
-    let tempArr = arr
     while (bool) {
-      let temp
       for (let j = 0; j < quantity - 1; j++) {
-        if (Number(tempArr[j].key) > Number(tempArr[j + 1].key)) {
-          temp = tempArr[j]
-          tempArr[j] = tempArr[j + 1]
-          tempArr[j + 1] = temp
+        if (Number(arr[j].key) > Number(arr[j + 1].key)) {
+          swap(j, j + 1)
           again = true
         }
       }
+      await sleep()
       if (again === false) { bool = false }
       again = false
+      setArr([...arr])
     }
-    setArr([...tempArr])
   }
 
   // Insertion Sort -> Starts at the 1st index, compares to the 0th index. If the 1st index is smaller, then that number is removed. 
   // The array is looped over again and the number is inserted infront of the first number that is greater. This process continues with the 2nd index and so on.
-  const insertionSort = () => {
+  const insertionSort = async () => {
     let val
     let tempArr = arr
     for (let i = 1; i < arr.length; i++) {
@@ -91,10 +84,12 @@ function App() {
           j++
         }
       }
+      await sleep()
+      setArr([...tempArr])
     }
-    setArr([...tempArr])
   }
 
+  // Takes state and determines which sort description to render
   const displayDescription = (value) => {
     let returnDescription
     if (value === "shuffle") {
@@ -131,6 +126,19 @@ function App() {
       </div >
     }
     return returnDescription
+  }
+
+  // Time out function that allows you to see the process of the sorting algorithms
+  const sleep = () => {
+    return new Promise(resolve => setTimeout(resolve, 10))
+  }
+
+  // A reusable function that swaps 2 items in an array
+  const swap = (a, b) => {
+    let temp = arr[a]
+    arr[a] = arr[b]
+    arr[b] = temp
+    return arr
   }
 
   return (

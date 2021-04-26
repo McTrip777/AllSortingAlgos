@@ -10,12 +10,14 @@ function App() {
   useEffect(() => {
     let temp = []
     let color = "#0c0032"
-    for (let i = 0; i < quantity; i++) {
-      if (i % 4 === 0) { color = "#0c0032" } else if (i % 4 === 1) { color = "#240090" } else if (i % 4 === 2) { color = "#190061" } else { color = "#3500d3" }
-      temp.push(<div key={i} className="bar" style={{ height: (i * 1 + 10), width: 10, background: color }} />)
+    if (quantity <= 400 && quantity >= 100) {
+      for (let i = 0; i < quantity; i++) {
+        if (i % 4 === 0) { color = "#0c0032" } else if (i % 4 === 1) { color = "#240090" } else if (i % 4 === 2) { color = "#190061" } else { color = "#3500d3" }
+        temp.push(<div key={i} className="bar" style={{ height: (i * 1 + 10), width: 10, background: color }} />)
+      }
+      setArr(temp)
     }
-    setArr(temp)
-  }, [])
+  }, [quantity])
 
   // Shuffle my array so it can be sorted
   const shuffle = () => {
@@ -59,9 +61,9 @@ function App() {
           again = true
         }
       }
-      await sleep()
       if (again === false) { bool = false }
       again = false
+      await sleep()
       setArr([...arr])
     }
   }
@@ -128,11 +130,6 @@ function App() {
     return returnDescription
   }
 
-  // Time out function that allows you to see the process of the sorting algorithms
-  const sleep = () => {
-    return new Promise(resolve => setTimeout(resolve, 10))
-  }
-
   // A reusable function that swaps 2 items in an array
   const swap = (a, b) => {
     let temp = arr[a]
@@ -140,6 +137,16 @@ function App() {
     arr[b] = temp
     return arr
   }
+
+  // Time out function that allows you to see the process of the sorting algorithms
+  const sleep = () => {
+    return new Promise(resolve => setTimeout(resolve, 10))
+  }
+
+  const quantityChoice = (event) => {
+    console.log(event)
+    setQuantity(event.target.value);
+  };
 
   return (
     <div className="App">
@@ -161,7 +168,7 @@ function App() {
           setMethod("insertion")
         }}>Insertion Sort</button>
 
-        {/* <input type="number" value={quantity} onChange={}></input> */}
+        <input type="number" min="100" max="400" value={quantity} onChange={quantityChoice}></input>
       </div>
       <div className="barsContainer">
         {arr}

@@ -5,6 +5,7 @@ function App() {
   const [quantity, setQuantity] = useState(300)
   const [arr, setArr] = useState([])
   const [method, setMethod] = useState("Selection")
+  const [sorted, setSorted] = useState(true)
 
   // Creation of my array of bars
   useEffect(() => {
@@ -17,7 +18,18 @@ function App() {
       }
       setArr(temp)
     }
+    checker()
   }, [quantity])
+
+
+  const checker = () => {
+    let bool = false
+    for (let i = 0; i < quantity - 1; i++) {
+      if (Number(arr[i].key) !== Number(arr[i + 1].key) - 1) bool = true
+    }
+    console.log("am I sorted?", !bool)
+    setSorted(bool)
+  }
 
   // Shuffle my array so it can be sorted
   const shuffle = () => {
@@ -27,68 +39,108 @@ function App() {
       swap(i, random)
     }
     setArr([...arr])
+    checker()
   }
 
   // Selection Sort -> Find the smallest value and swap it with the first value of the array then increment the index and repeat until solved
   const selectionSort = async () => {
-    let i = 0
-    let tempArr = arr
-    while (i < quantity) {
-      let lowNum = quantity
-      let index
-      for (let j = i; j < quantity; j++) {
-        if (lowNum > Number(tempArr[j].key)) {
-          lowNum = Number(tempArr[j].key)
-          index = j
+    if (sorted) {
+      let i = 0
+      let tempArr = arr
+      while (i < quantity) {
+        let lowNum = quantity
+        let index
+        for (let j = i; j < quantity; j++) {
+          if (lowNum > Number(tempArr[j].key)) {
+            lowNum = Number(tempArr[j].key)
+            index = j
+          }
         }
+        await sleep()
+        swap(i, index)
+        i++
+        setArr([...tempArr])
       }
-      await sleep()
-      swap(i, index)
-      i++
-      setArr([...tempArr])
     }
+    checker()
   }
 
   // Bubble Sort -> Take the first 2 values and compare them, if the first is larger than the second, swap them otherwise continue to the next number.
   // Continue this through the whole array and then repeat until all values are in order.
   const bubbleSort = async () => {
-    let bool = true
-    let again = false
-    while (bool) {
-      for (let j = 0; j < quantity - 1; j++) {
-        if (Number(arr[j].key) > Number(arr[j + 1].key)) {
-          swap(j, j + 1)
-          again = true
+    if (sorted) {
+      let bool = true
+      let again = false
+      while (bool) {
+        for (let j = 0; j < quantity - 1; j++) {
+          if (Number(arr[j].key) > Number(arr[j + 1].key)) {
+            swap(j, j + 1)
+            again = true
+          }
         }
+        if (again === false) { bool = false }
+        again = false
+        await sleep()
+        setArr([...arr])
       }
-      if (again === false) { bool = false }
-      again = false
-      await sleep()
-      setArr([...arr])
     }
+    checker()
   }
 
   // Insertion Sort -> Starts at the 1st index, compares to the 0th index. If the 1st index is smaller, then that number is removed. 
   // The array is looped over again and the number is inserted infront of the first number that is greater. This process continues with the 2nd index and so on.
   const insertionSort = async () => {
-    let val
-    let tempArr = arr
-    for (let i = 1; i < arr.length; i++) {
-      if (Number(tempArr[i].key) < Number(tempArr[i - 1].key)) {
-        val = tempArr.splice(i, 1)
-        let bool = true
-        let j = 0
-        while (bool) {
-          if (Number(val[0].key) < Number(tempArr[j].key)) {
-            tempArr.splice(j, 0, val[0]);
-            bool = false
+    if (sorted) {
+      let val
+      let tempArr = arr
+      for (let i = 1; i < arr.length; i++) {
+        if (Number(tempArr[i].key) < Number(tempArr[i - 1].key)) {
+          val = tempArr.splice(i, 1)
+          let bool = true
+          let j = 0
+          while (bool) {
+            if (Number(val[0].key) < Number(tempArr[j].key)) {
+              tempArr.splice(j, 0, val[0]);
+              bool = false
+            }
+            j++
           }
-          j++
         }
+        await sleep()
+        setArr([...tempArr])
       }
-      await sleep()
-      setArr([...tempArr])
     }
+    checker()
+  }
+
+  // Quick Sort -> this is a recursive function that subdivides the array with each recursive call and swaps values to the left/low if they are less than the pivot point 
+  // or to the right/high if they are greater than the pivot point. 
+  // The quick sort is responsible for subdividing the array
+  // while partition is responsible for looping through the subdivided array and calling the swap method based on if the value is greater than or less than the pivot value.
+  const quickSort = async (arr, low, high) => {
+    if (sorted) {
+      if (low < high) {
+        let index = await partition(arr, low, high)
+        await quickSort(arr, low, index - 1)
+        await quickSort(arr, index + 1, high)
+      }
+    }
+  }
+  const partition = async (arr, low, high) => {
+    let pivot = Number(arr[high].key)
+    let i = (low - 1)
+    for (let j = low; j < high; j++) {
+      if (Number(arr[j].key) < pivot) {
+        i++
+        await swap(i, j)
+        await setArr([...arr])
+        await sleep()
+      }
+    }
+    await swap(i + 1, high)
+    await setArr([...arr])
+    await sleep()
+    return (i + 1)
   }
 
   // Takes state and determines which sort description to render
@@ -127,6 +179,21 @@ function App() {
         </ol>
       </div >
     }
+    else if (value === "quick") {
+      returnDescription = <div className="quick description">
+        <h1>Quick Sort</h1>
+        <p>Like Merge Sort, QuickSort is a Divide and Conquer algorithm. It picks an element as pivot and partitions the given array around the picked pivot. There are many different versions of quickSort that pick pivot in different ways. </p>
+
+
+        <ol>
+          <li>1: Always pick first element as pivot.</li>
+          <li>2: Always pick last element as pivot (implemented)</li>
+          <li>3: Pick a random element as pivot.</li>
+          <li>4: Pick median as pivot.</li>
+        </ol>
+        <p>The key process in quickSort is partition(). Target of partitions is, given an array and an element x of array as pivot, put x at its correct position in sorted array and put all smaller elements (smaller than x) before x, and put all greater elements (greater than x) after x. All this should be done in linear time.</p>
+      </div >
+    }
     return returnDescription
   }
 
@@ -144,7 +211,6 @@ function App() {
   }
 
   const quantityChoice = (event) => {
-    console.log(event)
     setQuantity(event.target.value);
   };
 
@@ -167,6 +233,10 @@ function App() {
           insertionSort()
           setMethod("insertion")
         }}>Insertion Sort</button>
+        <button onClick={() => {
+          quickSort(arr, 0, quantity - 1)
+          setMethod("quick")
+        }}>Quick Sort</button>
 
         <input type="number" min="100" max="400" value={quantity} onChange={quantityChoice}></input>
       </div>

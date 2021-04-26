@@ -2,14 +2,17 @@ import React, { useState, useEffect } from "react";
 import "./app.scss"
 
 function App() {
-  const [quantity, setQuantity] = useState(20)
+  const [quantity, setQuantity] = useState(200)
   const [arr, setArr] = useState([])
+  const [method, setMethod] = useState("Selection")
 
   // Creation of my array of bars
   useEffect(() => {
     let temp = []
+    let color = "#0c0032"
     for (let i = 0; i < quantity; i++) {
-      temp.push(<div key={i} className="bar" style={{ height: (i * 10 + 10), width: 10 }} />)
+      if (i % 4 === 0) { color = "#0c0032" } else if (i % 4 === 1) { color = "#240090" } else if (i % 4 === 2) { color = "#190061" } else { color = "#3500d3" }
+      temp.push(<div key={i} className="bar" style={{ height: (i * 1 + 10), width: 10, background: color }} />)
     }
     setArr(temp)
   }, [])
@@ -92,19 +95,73 @@ function App() {
     setArr([...tempArr])
   }
 
+  const displayDescription = (value) => {
+    let returnDescription
+    if (value === "shuffle") {
+      returnDescription = <div className="shuffle description">
+        <h1>Shuffle</h1>
+        <p>Shuffle works by iterating over every item in the array and swapping it with another item at a randomly generated index.</p>
+      </div>
+    } else if (value === "selection") {
+      returnDescription = <div className="selection description">
+        <h1>Selection Sort</h1>
+        <p>The selection sort algorithm sorts an array by repeatedly finding the minimum element (considering ascending order) from unsorted part and putting it at the beginning. The algorithm maintains two subarrays in a given array.</p>
+        <ol>
+          <li> 1) The subarray which is already sorted.</li>
+          <li>2) Remaining subarray which is unsorted.</li>
+        </ol>
+        <p>In every iteration of selection sort, the minimum element (considering ascending order) from the unsorted subarray is picked and moved to the sorted subarray.</p>
+      </div>
+    } else if (value === "bubble") {
+      returnDescription = <div className="bubble description">
+        <h1>Bubble Sort</h1>
+        <p>Bubble Sort is the simplest sorting algorithm that works by repeatedly swapping the adjacent elements if they are in the wrong order.</p>
+      </div>
+    } else if (value === "insertion") {
+      returnDescription = <div className="insertion description">
+        <h1>Insertion Sort</h1>
+        <p>Insertion sort is a simple sorting algorithm that works similar to the way you sort playing cards in your hands. The array is virtually split into a sorted and an unsorted part. Values from the unsorted part are picked and placed at the correct position in the sorted part.</p>
+        <h2>Algorithm</h2>
+        <p>To sort an array of size n in ascending order:</p>
+        <ol>
+          <li>1: Iterate from arr[1] to arr[n] over the array.</li>
+          <li>2: Compare the current element (key) to its predecessor.</li>
+          <li>3: If the key element is smaller than its predecessor, compare it to the elements before. Move the greater elements one position up to make space for the swapped element.</li>
+        </ol>
+      </div >
+    }
+    return returnDescription
+  }
 
   return (
     <div className="App">
+      <div className="buttonContainer">
+        <button onClick={() => {
+          shuffle()
+          setMethod("shuffle")
+        }}>Shuffle</button>
+        <button onClick={() => {
+          selectionSort()
+          setMethod("selection")
+        }}>Selection</button>
+        <button onClick={() => {
+          bubbleSort()
+          setMethod("bubble")
+        }}>Bubble Sort</button>
+        <button onClick={() => {
+          insertionSort()
+          setMethod("insertion")
+        }}>Insertion Sort</button>
+
+        {/* <input type="number" value={quantity} onChange={}></input> */}
+      </div>
       <div className="barsContainer">
         {arr}
       </div>
-      <div className="buttonContainer">
-        <button onClick={shuffle}>Shuffle</button>
-        <button onClick={selectionSort}>Selection</button>
-        <button onClick={bubbleSort}>Bubble Sort</button>
-        <button onClick={insertionSort}>Insertion Sort</button>
-        {/* <input type="number" value={quantity} onChange={}></input> */}
+      <div className="sortDescriptions">
+        {displayDescription(method)}
       </div>
+
     </div>
   );
 }

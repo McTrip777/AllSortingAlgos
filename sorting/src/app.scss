@@ -1,19 +1,68 @@
+// Colors
+// #0c0032
+// #190061
+// #240090
+// #3500d3
+// #282828
+
 .App{
     display: flex;
     flex-direction: column;
+    background-color: #282828;
+    height: 100vh;
+    .buttonContainer{
+        display: flex;
+        justify-content: space-evenly;
+        padding: 1em;
+        background-color: #0c0032;
+        margin-bottom: 3em;
+        box-shadow: 0px 0px 15px azure;
+        button{
+            margin:1em;
+            background-color: #3500d3;
+            color: white;
+            padding: 1em;
+            border-radius: 10px;
+            &:hover{
+
+            }
+        }
+    }
     .barsContainer{
         display: flex;
         justify-content: space-evenly;
         align-items: flex-end;
         .bar{
-            color: black;
-            background-color: black;
+            box-shadow: 0px 0px 5px azure;
         }
     }
-    .buttonContainer{
-
-        button{
-            margin:1em;
+    .sortDescriptions{
+        margin:2em;
+        .description{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            h1{
+                padding:1em;
+                font-size: 2em;
+            }
+            h2{
+                padding:1em 0 .5em 0;
+                font-size: 1.6em;
+            }
+            p{
+                font-size: 1.2em;
+            }
+            ol{
+                display: flex;
+                flex-direction: column;
+                align-self: flex-start;
+                padding:1em;
+                li{
+                    font-size: 1.2em;
+                }
+            }
         }
     }
 }

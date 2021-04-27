@@ -18,7 +18,6 @@ function App() {
       }
       setArr(temp)
     }
-    checker()
   }, [quantity])
 
 
@@ -27,7 +26,6 @@ function App() {
     for (let i = 0; i < quantity - 1; i++) {
       if (Number(arr[i].key) !== Number(arr[i + 1].key) - 1) bool = true
     }
-    console.log("am I sorted?", !bool)
     setSorted(bool)
   }
 
@@ -125,6 +123,7 @@ function App() {
         await quickSort(arr, index + 1, high)
       }
     }
+    checker()
   }
   const partition = async (arr, low, high) => {
     let pivot = Number(arr[high].key)
@@ -207,7 +206,7 @@ function App() {
 
   // Time out function that allows you to see the process of the sorting algorithms
   const sleep = () => {
-    return new Promise(resolve => setTimeout(resolve, 10))
+    return new Promise(resolve => setTimeout(resolve, 50))
   }
 
   const quantityChoice = (event) => {

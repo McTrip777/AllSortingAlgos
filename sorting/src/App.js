@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./app.scss"
 
 function App() {
-  const [quantity, setQuantity] = useState(300)
+  const [quantity, setQuantity] = useState(100)
   const [arr, setArr] = useState([])
   const [method, setMethod] = useState("Selection")
   const [sorted, setSorted] = useState(true)
@@ -54,7 +54,7 @@ function App() {
             index = j
           }
         }
-        await sleep()
+        await sleep(20)
         swap(i, index)
         i++
         setArr([...tempArr])
@@ -78,7 +78,7 @@ function App() {
         }
         if (again === false) { bool = false }
         again = false
-        await sleep()
+        await sleep(20)
         setArr([...arr])
       }
     }
@@ -104,7 +104,7 @@ function App() {
             j++
           }
         }
-        await sleep()
+        await sleep(20)
         setArr([...tempArr])
       }
     }
@@ -133,13 +133,40 @@ function App() {
         i++
         await swap(i, j)
         await setArr([...arr])
-        await sleep()
+        await sleep(10)
       }
     }
     await swap(i + 1, high)
     await setArr([...arr])
-    await sleep()
+    await sleep(10)
     return (i + 1)
+  }
+
+  const radixSort = async () => {
+    if (sorted) {
+      for (let i = 0; i < 2; i++) {
+        await radixCheck(i)
+      }
+    }
+    checker()
+  }
+  const radixCheck = async (i) => {
+    let bool = true
+    let again = false
+    while (bool) {
+      for (let j = 0; j < quantity - 1; j++) {
+        let temp = "00" + arr[j].key
+        let temp2 = "00" + arr[j + 1].key
+        if (Number(temp[arr[j].key.length - i + 1]) > Number(temp2[arr[j + 1].key.length + 1 - i])) {
+          await swap(j, j + 1)
+          await setArr([...arr])
+          await sleep(0)
+          again = true
+        }
+      }
+      if (again === false) { bool = false }
+      again = false
+    }
   }
 
   // Takes state and determines which sort description to render
@@ -205,8 +232,8 @@ function App() {
   }
 
   // Time out function that allows you to see the process of the sorting algorithms
-  const sleep = () => {
-    return new Promise(resolve => setTimeout(resolve, 50))
+  const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms))
   }
 
   const quantityChoice = (event) => {
@@ -236,6 +263,10 @@ function App() {
           quickSort(arr, 0, quantity - 1)
           setMethod("quick")
         }}>Quick Sort</button>
+        <button onClick={() => {
+          radixSort()
+          setMethod("radix")
+        }}>Radix Sort</button>
 
         <input type="number" min="100" max="400" value={quantity} onChange={quantityChoice}></input>
       </div>

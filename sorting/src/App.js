@@ -142,30 +142,69 @@ function App() {
     return (i + 1)
   }
 
-  const radixSort = async () => {
+  const radixSort = async (array) => {
     if (sorted) {
-      for (let i = 0; i < 2; i++) {
-        await radixCheck(i)
+      let temp = array[0].key
+      let maxVal = Number(temp[array[0].key])
+      for (let i = 1; i < array.length; i++) {
+        if (maxVal < Number(array[i].key)) { maxVal = Number(array[i].key) }
       }
+      const iter = maxVal.toString().length
+      for (let i = 0; i < iter; i++) {
+        const newArr = Array.from({ length: 10 }, () => [])
+        for (let j = 0; j < array.length; j++) {
+          let temp = array[j].key
+          const numberVal = Math.floor(Number(temp) / Math.pow(10, i)) % 10
+          newArr[numberVal].push(array[j])
+        }
+        const tempArr = [].concat(...newArr)
+        array = tempArr
+      }
+      setArr([...array])
     }
     checker()
   }
-  const radixCheck = async (i) => {
-    let bool = true
-    let again = false
-    while (bool) {
-      for (let j = 0; j < quantity - 1; j++) {
-        let temp = "00" + arr[j].key
-        let temp2 = "00" + arr[j + 1].key
-        if (Number(temp[arr[j].key.length - i + 1]) > Number(temp2[arr[j + 1].key.length + 1 - i])) {
-          await swap(j, j + 1)
-          await setArr([...arr])
-          await sleep(0)
-          again = true
+
+  const mergeSort = async (array) => {
+    if (array.length > 1) {
+      let middle = Math.floor(array.length / 2)
+      let left = array.slice(0, middle)
+      let right = array.slice(middle, array.length)
+      await mergeSort(left)
+      await mergeSort(right)
+
+      let i = 0, j = 0, k = 0
+      while (i < left.length && j < right.length) {
+        console.log(Number(left[i].key), Number(right[j].key), left, right)
+        if (Number(left[i].key) < Number(right[j].key)) {
+          array[k] = left[i]
+          await sleep(50)
+          await setArr([...array])
+          i += 1
         }
+        else {
+          array[k] = right[j]
+          await sleep(50)
+          await setArr([...array])
+          j += 1
+        }
+        k += 1
       }
-      if (again === false) { bool = false }
-      again = false
+      while (i < left.length) {
+        array[k] = left[i]
+        await sleep(50)
+        await setArr([...array])
+        i += 1
+        k += 1
+      }
+      while (j < right.length) {
+        array[k] = right[j]
+        await sleep(50)
+        await setArr([...array])
+        j += 1
+        k += 1
+      }
+      // setArr([...array])
     }
   }
 
@@ -264,9 +303,13 @@ function App() {
           setMethod("quick")
         }}>Quick Sort</button>
         <button onClick={() => {
-          radixSort()
+          radixSort(arr)
           setMethod("radix")
         }}>Radix Sort</button>
+        <button onClick={() => {
+          mergeSort(arr)
+          setMethod("merge")
+        }}>Merge Sort</button>
 
         <input type="number" min="100" max="400" value={quantity} onChange={quantityChoice}></input>
       </div>

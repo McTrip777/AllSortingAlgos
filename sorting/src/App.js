@@ -54,10 +54,9 @@ function App() {
             index = j
           }
         }
-        await sleep(20)
         swap(i, index)
         i++
-        setArr([...tempArr])
+        await stateAndSleep(tempArr, 20)
       }
     }
     checker()
@@ -78,8 +77,7 @@ function App() {
         }
         if (again === false) { bool = false }
         again = false
-        await sleep(20)
-        setArr([...arr])
+        await stateAndSleep(arr, 20)
       }
     }
     checker()
@@ -104,8 +102,7 @@ function App() {
             j++
           }
         }
-        await sleep(20)
-        setArr([...tempArr])
+        await stateAndSleep(tempArr, 20)
       }
     }
     checker()
@@ -132,13 +129,11 @@ function App() {
       if (Number(arr[j].key) < pivot) {
         i++
         await swap(i, j)
-        await setArr([...arr])
-        await sleep(10)
+        await stateAndSleep(arr, 10)
       }
     }
     await swap(i + 1, high)
-    await setArr([...arr])
-    await sleep(10)
+    await stateAndSleep(arr, 10)
     return (i + 1)
   }
 
@@ -166,46 +161,44 @@ function App() {
   }
 
   const mergeSort = async (array) => {
-    if (array.length > 1) {
-      let middle = Math.floor(array.length / 2)
-      let left = array.slice(0, middle)
-      let right = array.slice(middle, array.length)
-      await mergeSort(left)
-      await mergeSort(right)
+    if (sorted) {
+      if (array.length > 1) {
+        let middle = Math.floor(array.length / 2)
+        let left = array.slice(0, middle)
+        let right = array.slice(middle, array.length)
+        await mergeSort(left)
+        await mergeSort(right)
 
-      let i = 0, j = 0, k = 0
-      while (i < left.length && j < right.length) {
-        console.log(Number(left[i].key), Number(right[j].key), left, right)
-        if (Number(left[i].key) < Number(right[j].key)) {
+        let i = 0, j = 0, k = 0
+        while (i < left.length && j < right.length) {
+          if (Number(left[i].key) < Number(right[j].key)) {
+            array[k] = left[i]
+            await stateAndSleep(array, 50)
+            i += 1
+          }
+          else {
+            array[k] = right[j]
+            await stateAndSleep(array, 50)
+            j += 1
+          }
+          k += 1
+        }
+        while (i < left.length) {
           array[k] = left[i]
-          await sleep(50)
-          await setArr([...array])
+          await stateAndSleep(array, 50)
           i += 1
+          k += 1
         }
-        else {
+        while (j < right.length) {
           array[k] = right[j]
-          await sleep(50)
-          await setArr([...array])
+          await stateAndSleep(array, 50)
           j += 1
+          k += 1
         }
-        k += 1
+        setArr([...array])
       }
-      while (i < left.length) {
-        array[k] = left[i]
-        await sleep(50)
-        await setArr([...array])
-        i += 1
-        k += 1
-      }
-      while (j < right.length) {
-        array[k] = right[j]
-        await sleep(50)
-        await setArr([...array])
-        j += 1
-        k += 1
-      }
-      // setArr([...array])
     }
+    checker()
   }
 
   // Takes state and determines which sort description to render
@@ -273,6 +266,11 @@ function App() {
   // Time out function that allows you to see the process of the sorting algorithms
   const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  const stateAndSleep = async (array, ms) => {
+    await sleep(ms)
+    await setArr([...array])
   }
 
   const quantityChoice = (event) => {

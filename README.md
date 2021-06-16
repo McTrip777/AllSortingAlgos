@@ -5,7 +5,7 @@
 
 ## About The Project
 
-[product-screenshot]]("./sorting/src/img/productImg.png")
+![product-screenshot]](./sorting/src/img/productImg.png)
 
 ### Built With  
 

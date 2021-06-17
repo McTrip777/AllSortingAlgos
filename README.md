@@ -1,8 +1,6 @@
 
 # AllSortingAlgos
 
-***https://all-sorting-algorithms.netlify.app/***
-
 ## About The Project
 
 ![Screen Shot 2021-06-16 at 4 36 30 PM](https://user-images.githubusercontent.com/44535342/122305872-c2ad9600-cec4-11eb-818e-4ca19fce4ca7.png)
